@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composant Carte de Prix Réutilisable</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #pricing-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .pricing {
+            width: 300px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            /* Correction de box-shdow */
+            border-radius: 8px;
+            padding: 20px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 0;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: bold;
+            color: green;
+        }
+
+        .features {
+            list-style: none;
+            padding-left: 0;
+            margin: 15px 0;
+        }
+
+        .features li {
+            padding: 8px 4px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .btn {
+            background: blue;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+            /* Indique que le bouton est cliquable */
+            font-size: 16px;
+            width: 100%;
+            transition: background 0.2s ease;
+        }
+
+        .btn:hover {
+            background: darkblue;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Conteneur où les cartes seront injectées -->
+    <div id="pricing-container"></div>
+
+    <script>
+        // Fonction composant réutilisable
+        function Card(title, price, features, buttonText = "Start Trial") {
+            // Création de l'élément principal
+            const card = document.createElement("div");
+            card.className = "pricing";
+
+            // Génération de la liste des fonctionnalités
+            const featuresList = features.map(feature => `<li>${feature}</li>`).join("");
+
+            // Structure HTML interne (avec </h2> correctement fermé)
+            card.innerHTML = `
+        <div>
+          <h2 class="title">${title}</h2>
+          <p class="price">${price}</p>
+          <ul class="features">
+            ${featuresList}
+          </ul>
+        </div>
+        <button class="btn">${buttonText}</button>
+      `;
+
+            // Rendre le bouton interactif
+            const button = card.querySelector(".btn");
+            button.addEventListener("click", () => {
+                alert(`Vous avez sélectionné l'offre : ${title} (${price})`);
+            });
+
+            return card;
+        }
+
+        // Test du composant avec 3 offres différentes
+        const container = document.getElementById("pricing-container");
+
+        const plans = [
+            {
+                title: "Basic Plan",
+                price: "$9.99 /month",
+                features: ["1 GB Storage", "Basic Support", "All Core Features"],
+                buttonText: "Start Trial"
+            },
+            {
+                title: "Pro Plan",
+                price: "$19.99 /month",
+                features: ["50 GB Storage", "Priority Support", "All Core Features", "Analytics Dashboard"],
+                buttonText: "Get Pro"
+            },
+            {
+                title: "Enterprise Plan",
+                price: "$49.99 /month",
+                features: ["Unlimited Storage", "24/7 Dedicated Support", "Custom Integrations"],
+                buttonText: "Contact Sales"
+            }
+        ];
+
+        plans.forEach(plan => {
+            const cardElement = Card(plan.title, plan.price, plan.features, plan.buttonText);
+            container.appendChild(cardElement);
+        });
+    </script>
+
+</body>
+
+</html>
