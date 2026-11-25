@@ -4,119 +4,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Composant Carte de Prix Réutilisable</title>
+    <title>Composant Carte de Prix Animé</title>
     <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            --card-bg: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --accent: #10b981;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            padding: 40px 20px;
+            color: var(--text-main);
         }
 
         #pricing-container {
             display: flex;
-            gap: 20px;
+            gap: 28px;
             flex-wrap: wrap;
             justify-content: center;
-            padding: 20px;
+            align-items: stretch;
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* Animation d'apparition au chargement */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.96);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .pricing {
-            width: 300px;
-            background-color: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            /* Correction de box-shdow */
-            border-radius: 8px;
-            padding: 20px;
-            text-align: left;
+            position: relative;
+            width: 310px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 32px 26px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            border: 2px solid transparent;
+            opacity: 0;
+            animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.35s ease,
+                border-color 0.35s ease;
+        }
+
+        .pricing:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 22px 45px rgba(37, 99, 235, 0.35);
+            border-color: var(--primary);
+        }
+
+        /* Style spécial pour la carte mise en avant */
+        .pricing.popular {
+            border-color: var(--primary);
+            box-shadow: 0 15px 35px rgba(37, 99, 235, 0.3);
+        }
+
+        .badge {
+            position: absolute;
+            top: -14px;
+            right: 24px;
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
         }
 
         .title {
             font-size: 22px;
-            font-weight: bold;
-            margin-top: 0;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
         }
 
         .price {
-            font-size: 20px;
-            font-weight: bold;
-            color: green;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .price span {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-muted);
         }
 
         .features {
             list-style: none;
-            padding-left: 0;
-            margin: 15px 0;
+            margin-bottom: 28px;
         }
 
         .features li {
-            padding: 8px 4px;
-            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            transition: transform 0.2s ease, color 0.2s ease;
         }
 
+        .features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing:hover .features li {
+            color: var(--text-main);
+        }
+
+        .features li:hover {
+            transform: translateX(6px);
+        }
+
+        .check-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #dcfce7;
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        /* Bouton avec effet ripple au clic */
         .btn {
-            background: blue;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 5px;
-            margin-top: 10px;
-            cursor: pointer;
-            /* Indique que le bouton est cliquable */
-            font-size: 16px;
+            position: relative;
+            overflow: hidden;
             width: 100%;
-            transition: background 0.2s ease;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
         }
 
         .btn:hover {
-            background: darkblue;
+            background: var(--primary-hover);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.45);
+            transform: scale(0);
+            animation: rippleAnim 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes rippleAnim {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Notification Toast moderne */
+        #toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: #10b981;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+            z-index: 100;
+        }
+
+        #toast.show {
+            transform: translateY(0);
+            opacity: 1;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Conteneur où les cartes seront injectées -->
     <div id="pricing-container"></div>
+    <div id="toast"></div>
 
     <script>
-        // Fonction composant réutilisable
-        function Card(title, price, features, buttonText = "Start Trial") {
-            // Création de l'élément principal
+        let toastTimeout;
+
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.classList.add("show");
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3000);
+        }
+
+        function createRipple(event, button) {
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+            const rect = button.getBoundingClientRect();
+
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - rect.left - radius}px`;
+            circle.style.top = `${event.clientY - rect.top - radius}px`;
+            circle.classList.add("ripple");
+
+            const existingRipple = button.querySelector(".ripple");
+            if (existingRipple) existingRipple.remove();
+
+            button.appendChild(circle);
+        }
+
+        function Card(title, price, features, buttonText = "Start Trial", isPopular = false, index = 0) {
             const card = document.createElement("div");
-            card.className = "pricing";
+            card.className = `pricing ${isPopular ? "popular" : ""}`;
+            card.style.animationDelay = `${index * 0.15}s`;
 
-            // Génération de la liste des fonctionnalités
-            const featuresList = features.map(feature => `<li>${feature}</li>`).join("");
+            const [amount, period] = price.split("/");
+            const featuresList = features
+                .map(f => `<li><span class="check-icon">✓</span> ${f}</li>`)
+                .join("");
 
-            // Structure HTML interne (avec </h2> correctement fermé)
             card.innerHTML = `
+        ${isPopular ? '<span class="badge">Populaire</span>' : ""}
         <div>
           <h2 class="title">${title}</h2>
-          <p class="price">${price}</p>
-          <ul class="features">
-            ${featuresList}
-          </ul>
+          <p class="price">${amount.trim()} <span>/${period ? period.trim() : "month"}</span></p>
+          <ul class="features">${featuresList}</ul>
         </div>
         <button class="btn">${buttonText}</button>
       `;
 
-            // Rendre le bouton interactif
             const button = card.querySelector(".btn");
-            button.addEventListener("click", () => {
-                alert(`Vous avez sélectionné l'offre : ${title} (${price})`);
+            button.addEventListener("click", (e) => {
+                createRipple(e, button);
+                showToast(`✨ Offre sélectionnée : ${title} (${price})`);
             });
 
             return card;
         }
 
-        // Test du composant avec 3 offres différentes
         const container = document.getElementById("pricing-container");
 
         const plans = [
@@ -124,25 +306,29 @@
                 title: "Basic Plan",
                 price: "$9.99 /month",
                 features: ["1 GB Storage", "Basic Support", "All Core Features"],
-                buttonText: "Start Trial"
+                buttonText: "Start Trial",
+                isPopular: false
             },
             {
                 title: "Pro Plan",
                 price: "$19.99 /month",
-                features: ["50 GB Storage", "Priority Support", "All Core Features", "Analytics Dashboard"],
-                buttonText: "Get Pro"
+                features: ["50 GB Storage", "Priority 24/7 Support", "All Core Features", "Analytics Dashboard"],
+                buttonText: "Get Pro Now",
+                isPopular: true
             },
             {
                 title: "Enterprise Plan",
                 price: "$49.99 /month",
-                features: ["Unlimited Storage", "24/7 Dedicated Support", "Custom Integrations"],
-                buttonText: "Contact Sales"
+                features: ["Unlimited Storage", "Dedicated Account Manager", "Custom API Integrations", "SLA 99.9%"],
+                buttonText: "Contact Sales",
+                isPopular: false
             }
         ];
 
-        plans.forEach(plan => {
-            const cardElement = Card(plan.title, plan.price, plan.features, plan.buttonText);
-            container.appendChild(cardElement);
+        plans.forEach((plan, index) => {
+            container.appendChild(
+                Card(plan.title, plan.price, plan.features, plan.buttonText, plan.isPopular, index)
+            );
         });
     </script>
 
